@@ -1,0 +1,15 @@
+type: edu
+custom_name: "Buy, fill, take!"
+files:
+  - name: src/machine/Main.kt
+    visible: true
+    learner_created: false
+  - name: test/CoffeeMachineTest.java
+    visible: false
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/5662#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Tue, 27 Aug 2024 14:24:56 UTC"
+record: 4
