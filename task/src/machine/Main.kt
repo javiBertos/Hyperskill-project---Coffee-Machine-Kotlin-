@@ -33,7 +33,7 @@ fun getInputFromUser(product: String): Int {
                 "milk" -> "Write how many ml of milk you want to add:"
                 "beans" -> "Write how many grams of coffee beans you want to add:"
                 "cups" -> "Write how many disposable cups you want to add:"
-                else -> "What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:"
+                else -> "Requested amount of [$product]:"
             }
         )
         amount = reader.nextLine()?.toIntOrNull()
@@ -84,34 +84,45 @@ fun getParamsByCoffeeType(type: String): List<Int> {
 }
 
 fun buyACoffee(): Unit {
-    val coffeeType = getInputFromUser("coffee")
+    println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:")
+    val inputOption = reader.nextLine()
+
+    if (inputOption == "back" || (inputOption.toIntOrNull() != null && inputOption.toIntOrNull() !in 1..3)) return
+
+    val coffeeType = inputOption.toInt()
     val (waterPerCoffee, milkPerCoffee, beansPerCoffee, costPerCoffee) = getParamsByCoffeeType(listOf("espresso", "latte", "capuccino")[coffeeType - 1])
 
-    currentWater -= waterPerCoffee
-    currentMilk -= milkPerCoffee
-    currentBeans -= beansPerCoffee
+    when {
+        currentWater < waterPerCoffee -> println("Sorry, not enough water!")
+        currentMilk < milkPerCoffee -> println("Sorry, not enough milk!")
+        currentBeans < beansPerCoffee -> println("Sorry, not enough coffee beans!")
+        currentDisposableCups < 1 -> println("Sorry, not enough disposable cups!")
+        else -> {
+            currentWater -= waterPerCoffee
+            currentMilk -= milkPerCoffee
+            currentBeans -= beansPerCoffee
 
-    currentDisposableCups -= 1
+            currentDisposableCups -= 1
 
-    currentCash += costPerCoffee
+            currentCash += costPerCoffee
+
+            println("I have enough resources, making you a coffee!")
+        }
+    }
 }
 
 fun main() {
-    printMachineStatus()
-
-    var option: String
-
     do {
-        println("Write action (buy, fill, take):")
-        option = reader.nextLine().trim()
+        println("Write action (buy, fill, take, remaining, exit):")
+        val option = reader.nextLine().trim()
 
         when(option) {
             "fill" -> fillTheMachine()
             "take" -> takeMoneyFromMachine()
             "buy" -> buyACoffee()
+            "remaining" -> printMachineStatus()
+            "exit" -> {}
             else -> println("Not valid option...")
         }
-    } while (option != "buy" && option != "fill" && option != "take")
-
-    printMachineStatus()
+    } while (option != "exit")
 }
